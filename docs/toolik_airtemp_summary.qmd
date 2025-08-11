@@ -83,3 +83,48 @@ ggsave(here::here("figs", "toolik_temp_plot.png"), height = 6, width = 7)
 Now try changing something about the ggplot code, and re-run your `ggsave()` line above. Does your saved figure change? Great!
 
 ## End Example 1
+
+
+## Beginning of example 2. Create a plot of chlorphyll concentration at varying measruement depth, do some customization.
+
+```{r}
+# Tell R where to read data from
+toolik_chlorophyll <- read_csv(here::here("data", "data-raw", "toolik_chlorophyll.csv"))
+
+#Get a data overview
+skimr::skim(toolik_chlorophyll)
+
+dim(toolik_chlorophyll)
+names(toolik_chlorophyll)
+
+# clean up the column names with janitor
+toolik_chlorophyll <- toolik_chlorophyll %>% janitor::clean_names()
+
+# One of the columns is populated with ".", this line says "If data in sucha column is ".", replace it with NA
+na_if(toolik_chlorophyll$active_chl_a_ug_l, "." )
+
+#Convert chlorophyll data to numeric
+toolik_chlorophyll$active_chl_a_ug_l <- as.numeric(toolik_chlorophyll$active_chl_a_ug_l)
+
+#plot it 
+toolik_chlorophyll_plot <- 
+  ggplot(data = toolik_chlorophyll, 
+       aes(x = depth, y = active_chl_a_ug_l)) +
+  geom_point() +
+  theme_minimal() +
+  labs(title = "Toolik Station Chlorophyll a Concentration",
+       x = "Depth (m)",
+       y = "Chlorophyll a concentration (ug/L)")
+
+#Print plot
+toolik_chlorophyll_plot
+
+#Save plot
+ggsave(here::here("figs", "toolik_chlorophyll_plot.png"), height = 6, width = 7)
+
+
+
+```
+
+
+
